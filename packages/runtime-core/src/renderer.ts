@@ -445,10 +445,11 @@ function baseCreateRenderer(
 
   // Note: functions inside this closure should use `const xxx = () => {}`
   // style in order to prevent being inlined by minifiers.
+  // 真实的虚拟dom => dom的方法 patch
   const patch: PatchFn = (
-    n1,
-    n2,
-    container,
+    n1, // 旧虚拟dom
+    n2, // 新虚拟dom
+    container, // dom节点
     anchor = null,
     parentComponent = null,
     parentSuspense = null,
@@ -468,21 +469,22 @@ function baseCreateRenderer(
     }
 
     const { type, ref, shapeFlag } = n2
+    // 判断新虚拟dom的类型
     switch (type) {
-      case Text:
+      case Text: // 文字
         processText(n1, n2, container, anchor)
         break
-      case Comment:
+      case Comment: // 组件
         processCommentNode(n1, n2, container, anchor)
         break
-      case Static:
+      case Static: // 静态资源
         if (n1 == null) {
           mountStaticNode(n2, container, anchor, isSVG)
         } else if (__DEV__) {
           patchStaticNode(n1, n2, container, isSVG)
         }
         break
-      case Fragment:
+      case Fragment: // html片段
         processFragment(
           n1,
           n2,
@@ -494,8 +496,8 @@ function baseCreateRenderer(
           optimized
         )
         break
-      default:
-        if (shapeFlag & ShapeFlags.ELEMENT) {
+      default: // type 不是上面任何一种,开始使用另一个字段来判断
+        if (shapeFlag & ShapeFlags.ELEMENT) { // 是元素
           processElement(
             n1,
             n2,
@@ -506,7 +508,7 @@ function baseCreateRenderer(
             isSVG,
             optimized
           )
-        } else if (shapeFlag & ShapeFlags.COMPONENT) {
+        } else if (shapeFlag & ShapeFlags.COMPONENT) { // 是组件
           processComponent(
             n1,
             n2,
@@ -552,6 +554,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 渲染dom时,需要渲染的虚拟dom为文字时的处理
   const processText: ProcessTextOrCommentFn = (n1, n2, container, anchor) => {
     if (n1 == null) {
       hostInsert(
@@ -567,6 +570,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 渲染dom时,需要渲染的虚拟dom为组件时的处理
   const processCommentNode: ProcessTextOrCommentFn = (
     n1,
     n2,
@@ -585,6 +589,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 渲染dom时,需要渲染的虚拟dom为静态资源时的处理
   const mountStaticNode = (
     n2: VNode,
     container: RendererElement,
@@ -1095,6 +1100,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 渲染dom时,需要渲染的虚拟dom为html片段时的处理
   const processFragment = (
     n1: VNode | null,
     n2: VNode,
@@ -1205,6 +1211,7 @@ function baseCreateRenderer(
           optimized
         )
       } else {
+        // 初始化时
         mountComponent(
           n2,
           container,
@@ -1253,6 +1260,7 @@ function baseCreateRenderer(
     if (__DEV__) {
       startMeasure(instance, `init`)
     }
+    // 初始化一个组件
     setupComponent(instance)
     if (__DEV__) {
       endMeasure(instance, `init`)
@@ -1352,6 +1360,7 @@ function baseCreateRenderer(
         if (__DEV__) {
           startMeasure(instance, `render`)
         }
+        // 计算出当前dom数对应的虚拟dom
         const subTree = (instance.subTree = renderComponentRoot(instance))
         if (__DEV__) {
           endMeasure(instance, `render`)
@@ -1375,6 +1384,7 @@ function baseCreateRenderer(
           if (__DEV__) {
             startMeasure(instance, `patch`)
           }
+          // 转换虚拟dom => 真实dom
           patch(
             null,
             subTree,
@@ -2186,6 +2196,7 @@ function baseCreateRenderer(
     return hostNextSibling((vnode.anchor || vnode.el)!)
   }
 
+  // 渲染,虚拟dom => dom的方法
   const render: RootRenderFunction = (vnode, container) => {
     if (vnode == null) {
       if (container._vnode) {
@@ -2220,10 +2231,11 @@ function baseCreateRenderer(
     >)
   }
 
+  // 返回能生成vue的工具(渲染器)
   return {
     render,
     hydrate,
-    createApp: createAppAPI(render, hydrate)
+    createApp: createAppAPI(render, hydrate) // 应用程序的创建工场
   }
 }
 

@@ -19,7 +19,9 @@ __DEV__=false yarn dev
 const execa = require('execa')
 const { fuzzyMatchTarget } = require('./utils')
 const args = require('minimist')(process.argv.slice(2))
+// 打包的目标目录, 默认打包vue文件夹
 const target = args._.length ? fuzzyMatchTarget(args._)[0] : 'vue'
+// 打包格式: cjs, umd, esm
 const formats = args.formats || args.f
 const sourceMap = args.sourcemap || args.s
 const commit = execa.sync('git', ['rev-parse', 'HEAD']).stdout.slice(0, 7)

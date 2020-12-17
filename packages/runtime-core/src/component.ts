@@ -517,6 +517,7 @@ export function validateComponentName(name: string, config: AppConfig) {
 
 export let isInSSRComponentSetup = false
 
+// 初始化一个组件
 export function setupComponent(
   instance: ComponentInternalInstance,
   isSSR = false

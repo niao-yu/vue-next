@@ -29,6 +29,7 @@ let renderer: Renderer<Element> | HydrationRenderer
 
 let enabledHydration = false
 
+// 创建vue实例的工场工具
 function ensureRenderer() {
   return renderer || (renderer = createRenderer<Node, Element>(rendererOptions))
 }
@@ -50,7 +51,9 @@ export const hydrate = ((...args) => {
   ensureHydrationRenderer().hydrate(...args)
 }) as RootHydrateFunction
 
+// 创建应用程序实例
 export const createApp = ((...args) => {
+  // 由渲染器生成一个app实例
   const app = ensureRenderer().createApp(...args)
 
   if (__DEV__) {

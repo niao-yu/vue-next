@@ -135,6 +135,7 @@ export function createAppAPI<HostElement>(
 
     let isMounted = false
 
+    // 应用程序实例模板, 声明了在前端使用vue框架时的一些全局方法,比如use/mixin等等
     const app: App = (context.app = {
       _uid: uid++,
       _component: rootComponent as ConcreteComponent,
@@ -244,6 +245,7 @@ export function createAppAPI<HostElement>(
           if (isHydrate && hydrate) {
             hydrate(vnode as VNode<Node, Element>, rootContainer as any)
           } else {
+            // 把虚拟dom渲染为dom
             render(vnode, rootContainer)
           }
           isMounted = true
