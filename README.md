@@ -1,12 +1,4 @@
-# vue3源码学习
-
-此项目来fock自以下vue官方仓库：`https://github.com/vuejs/vue-next.git`
-
-安装依赖：`yarn --ignore-scripts`
-> 忽略一些不必要的依赖
-
-修改`package.json`文件的`dev`指令为：`"dev": "node scripts/dev.js --sourcemap",`
-> 打包时带上`sourcemap`，方便调试
+个人学习笔记，在当前目录下「note」文件夹下
 
 # vue-next [![beta](https://img.shields.io/npm/v/vue/next.svg)](https://www.npmjs.com/package/vue/v/next) [![CircleCI](https://circleci.com/gh/vuejs/vue-next.svg?style=svg&circle-token=fb883a2d0a73df46e80b2e79fd430959d8f2b488)](https://circleci.com/gh/vuejs/vue-next)
 
