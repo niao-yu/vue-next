@@ -1,0 +1,99 @@
+{
+	"files": [
+		{
+			"path": "packages/vue/examples/01-init.html",
+			"bookmarks": [
+				{
+					"line": 18,
+					"column": 12,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/runtime-core/src/apiCreateApp.ts",
+			"bookmarks": [
+				{
+					"line": 229,
+					"column": 21,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/runtime-core/src/renderer.ts",
+			"bookmarks": [
+				{
+					"line": 451,
+					"column": 8,
+					"label": ""
+				},
+				{
+					"line": 1204,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 1242,
+					"column": 13,
+					"label": ""
+				},
+				{
+					"line": 1348,
+					"column": 26,
+					"label": ""
+				},
+				{
+					"line": 1378,
+					"column": 15,
+					"label": ""
+				},
+				{
+					"line": 2220,
+					"column": 9,
+					"label": ""
+				},
+				{
+					"line": 2231,
+					"column": 11,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/runtime-core/src/vnode.ts",
+			"bookmarks": [
+				{
+					"line": 290,
+					"column": 11,
+					"label": ""
+				},
+				{
+					"line": 318,
+					"column": 12,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/runtime-core/src/component.ts",
+			"bookmarks": [
+				{
+					"line": 404,
+					"column": 11,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "packages/reactivity/src/effect.ts",
+			"bookmarks": [
+				{
+					"line": 82,
+					"column": 13,
+					"label": ""
+				}
+			]
+		}
+	]
+}
