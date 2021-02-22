@@ -29,7 +29,7 @@ let renderer: Renderer<Element> | HydrationRenderer
 
 let enabledHydration = false
 
-// 创建vue实例的工场工具
+// 创建vue这个框架的工厂工具，最终调用的是 createRenderer
 function ensureRenderer() {
   return renderer || (renderer = createRenderer<Node, Element>(rendererOptions))
 }
@@ -62,6 +62,7 @@ export const createApp = ((...args) => {
 
   const { mount } = app
   app.mount = (containerOrSelector: Element | ShadowRoot | string): any => {
+    // 得到节点容器元素
     const container = normalizeContainer(containerOrSelector)
     if (!container) return
     const component = app._component
@@ -108,6 +109,7 @@ function injectNativeTagCheck(app: App) {
   })
 }
 
+// 返回 vue 挂载的根节点，入参可能是 节点、选择器 等等
 function normalizeContainer(
   container: Element | ShadowRoot | string
 ): Element | null {

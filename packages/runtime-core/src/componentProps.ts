@@ -126,6 +126,7 @@ type NormalizedProp =
 export type NormalizedProps = Record<string, NormalizedProp>
 export type NormalizedPropsOptions = [NormalizedProps, string[]] | []
 
+// 初始化 props
 export function initProps(
   instance: ComponentInternalInstance,
   rawProps: Data | null,
@@ -135,7 +136,7 @@ export function initProps(
   const props: Data = {}
   const attrs: Data = {}
   def(attrs, InternalObjectKey, 1)
-  setFullProps(instance, rawProps, props, attrs)
+  setFullProps(instance, rawProps, props, attrs) // 更新一下 props
   // validation
   if (__DEV__) {
     validateProps(props, instance)

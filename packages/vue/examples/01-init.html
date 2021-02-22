@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Vue源码</title>
 </head>
 <body>
   <div id="app">{{count}}</div>
@@ -15,12 +15,24 @@
 
   const { createApp } = Vue
 
-  createApp({
+  let vue = createApp({
     data() {
       return {
         count: 0,
       }
     },
-  }).mount('#app')
+    template: '<div :key="count"><span>{{count}}</span></div>',
+    mounted() {
+      console.log('mounted 了')
+      this.count++
+      setTimeout(() => {
+        this.count++
+      }, 1000);
+    },
+  })
+
+  console.log(vue)
+  vue.mount('#app')
+
 </script>
 </html>

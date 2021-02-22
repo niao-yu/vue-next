@@ -258,6 +258,7 @@ export function isVNode(value: any): value is VNode {
   return value ? value.__v_isVNode === true : false
 }
 
+// 判断旧新两个虚拟 dom，在某些对比条件上是否是相同的
 export function isSameVNodeType(n1: VNode, n2: VNode): boolean {
   if (
     __DEV__ &&
@@ -287,6 +288,7 @@ export function transformVNodeArgs(transformer?: typeof vnodeArgsTransformer) {
   vnodeArgsTransformer = transformer
 }
 
+// 开发环境时，生成虚拟dom
 const createVNodeWithArgsTransform = (
   ...args: Parameters<typeof _createVNode>
 ): VNode => {
@@ -314,6 +316,7 @@ export const createVNode = (__DEV__
   ? createVNodeWithArgsTransform
   : _createVNode) as typeof _createVNode
 
+// 正式环境时，生成虚拟dom
 function _createVNode(
   type: VNodeTypes | ClassComponent | typeof NULL_DYNAMIC_COMPONENT,
   props: (Data & VNodeProps) | null = null,
@@ -361,6 +364,7 @@ function _createVNode(
       if (isProxy(style) && !isArray(style)) {
         style = extend({}, style)
       }
+      // 把 style 序列化，返回新对象
       props.style = normalizeStyle(style)
     }
   }
@@ -548,6 +552,7 @@ export function createCommentVNode(
     : createVNode(Comment, null, text)
 }
 
+// 虚拟dom格式化
 export function normalizeVNode(child: VNodeChild): VNode {
   if (child == null || typeof child === 'boolean') {
     // empty placeholder
@@ -570,6 +575,7 @@ export function cloneIfMounted(child: VNode): VNode {
   return child.el === null ? child : cloneVNode(child)
 }
 
+// shapeFlag 字段 和 children 数据类型
 export function normalizeChildren(vnode: VNode, children: unknown) {
   let type = 0
   const { shapeFlag } = vnode

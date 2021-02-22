@@ -42,6 +42,7 @@ export function markAttrsAccessed() {
   accessedAttrs = true
 }
 
+// renderComponentRoot 关键！计算得出虚拟dom树
 export function renderComponentRoot(
   instance: ComponentInternalInstance
 ): VNode {

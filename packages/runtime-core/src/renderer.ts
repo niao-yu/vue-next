@@ -287,6 +287,7 @@ export const queuePostRenderEffect = __FEATURE_SUSPENSE__
   ? queueEffectWithSuspense
   : queuePostFlushCb
 
+// 设置或删掉 ref
 export const setRef = (
   rawRef: VNodeNormalizedRef,
   oldRawRef: VNodeNormalizedRef | null,
@@ -374,6 +375,8 @@ export const setRef = (
 }
 
 /**
+ * 创建vue这个框架的工厂工具（ensureRenderer方法）最终调用的，就是 createRenderer 这个方法，但这个方法，又会去调用 baseCreateRenderer 这个方法
+ * 
  * The createRenderer function accepts two generic arguments:
  * HostNode and HostElement, corresponding to Node and Element types in the
  * host environment. For example, for runtime-dom, HostNode would be the DOM
@@ -416,6 +419,7 @@ function baseCreateRenderer(
   createHydrationFns: typeof createHydrationFunctions
 ): HydrationRenderer
 
+// 创建vue这个框架的工厂工具（ensureRenderer方法） 调用 createRenderer，createRenderer 又直接调用这个方法，此方法是通过传入的参数，创造自定义的 vue app 的工厂
 // implementation
 function baseCreateRenderer(
   options: RendererOptions,
@@ -445,7 +449,7 @@ function baseCreateRenderer(
 
   // Note: functions inside this closure should use `const xxx = () => {}`
   // style in order to prevent being inlined by minifiers.
-  // 真实的虚拟dom => dom的方法 patch
+  // patch 对比并更新虚拟dom 然后再渲染成真实dom
   const patch: PatchFn = (
     n1, // 旧虚拟dom
     n2, // 新虚拟dom
@@ -509,6 +513,7 @@ function baseCreateRenderer(
             optimized
           )
         } else if (shapeFlag & ShapeFlags.COMPONENT) { // 是组件
+          // 新虚拟dom是组件
           processComponent(
             n1,
             n2,
@@ -657,6 +662,7 @@ function baseCreateRenderer(
     hostRemove(anchor!)
   }
 
+  // 新虚拟dom，是element节点时的处理
   const processElement = (
     n1: VNode | null,
     n2: VNode,
@@ -669,6 +675,7 @@ function baseCreateRenderer(
   ) => {
     isSVG = isSVG || (n2.type as string) === 'svg'
     if (n1 == null) {
+      // 新虚拟dom是 element 节点时，没有旧虚拟dom，直接挂载新的虚拟dom
       mountElement(
         n2,
         container,
@@ -679,10 +686,12 @@ function baseCreateRenderer(
         optimized
       )
     } else {
+      // 新旧虚拟 dom 都是 element 节点时的处理
       patchElement(n1, n2, parentComponent, parentSuspense, isSVG, optimized)
     }
   }
 
+  // 新虚拟dom是 element 节点时，没有旧虚拟dom，直接挂载新的虚拟dom
   const mountElement = (
     vnode: VNode,
     container: RendererElement,
@@ -859,6 +868,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 新旧虚拟 dom 都是 element 节点时的处理
   const patchElement = (
     n1: VNode,
     n2: VNode,
@@ -1048,6 +1058,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 判断对比新旧 props
   const patchProps = (
     el: RendererElement,
     vnode: VNode,
@@ -1191,6 +1202,7 @@ function baseCreateRenderer(
     }
   }
 
+  // processComponent 新虚拟dom是组件
   const processComponent = (
     n1: VNode | null,
     n2: VNode,
@@ -1211,7 +1223,7 @@ function baseCreateRenderer(
           optimized
         )
       } else {
-        // 初始化时
+        // 没有旧组件，挂载新组件
         mountComponent(
           n2,
           container,
@@ -1223,10 +1235,12 @@ function baseCreateRenderer(
         )
       }
     } else {
+      // 已经有组件了，更新组件
       updateComponent(n1, n2, optimized)
     }
   }
 
+  // 没有旧组件，挂载新组件 mountComponent
   const mountComponent: MountComponentFn = (
     initialVNode,
     container,
@@ -1260,7 +1274,7 @@ function baseCreateRenderer(
     if (__DEV__) {
       startMeasure(instance, `init`)
     }
-    // 初始化一个组件
+    // 给组件实例添加功能
     setupComponent(instance)
     if (__DEV__) {
       endMeasure(instance, `init`)
@@ -1296,6 +1310,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 已经有组件了，更新组件
   const updateComponent = (n1: VNode, n2: VNode, optimized: boolean) => {
     const instance = (n2.component = n1.component)!
     if (shouldUpdateComponent(n1, n2, optimized)) {
@@ -1331,6 +1346,7 @@ function baseCreateRenderer(
     }
   }
 
+  // 绑定组件的 update，生成一个 发布者
   const setupRenderEffect: SetupRenderEffectFn = (
     instance,
     initialVNode,
@@ -1360,7 +1376,8 @@ function baseCreateRenderer(
         if (__DEV__) {
           startMeasure(instance, `render`)
         }
-        // 计算出当前dom数对应的虚拟dom
+        // 计算出当前dom数对应的虚拟dom树
+        debugger
         const subTree = (instance.subTree = renderComponentRoot(instance))
         if (__DEV__) {
           endMeasure(instance, `render`)
@@ -1978,8 +1995,9 @@ function baseCreateRenderer(
     }
   }
 
+  // 卸载一个虚拟dom
   const unmount: UnmountFn = (
-    vnode,
+    vnode, // 要卸载的旧的虚拟dom
     parentComponent,
     parentSuspense,
     doRemove = false,
@@ -1991,11 +2009,11 @@ function baseCreateRenderer(
       ref,
       children,
       dynamicChildren,
-      shapeFlag,
-      patchFlag,
+      shapeFlag, // 虚拟dom的类型，节点、函数组件、有状态组件、字符串节点等等 全局搜索 ShapeFlags
+      patchFlag, // 同上 全局搜索 PatchFlags
       dirs
     } = vnode
-    // unset ref
+    // unset ref 解绑 ref
     if (ref != null) {
       setRef(ref, null, parentSuspense, null)
     }
@@ -2008,13 +2026,16 @@ function baseCreateRenderer(
     const shouldInvokeDirs = shapeFlag & ShapeFlags.ELEMENT && dirs
 
     let vnodeHook: VNodeHook | undefined | null
+    // 调用钩子函数
     if ((vnodeHook = props && props.onVnodeBeforeUnmount)) {
       invokeVNodeHook(vnodeHook, parentComponent, vnode)
     }
 
+    // 是组件？从父组件中，解绑子组件
     if (shapeFlag & ShapeFlags.COMPONENT) {
       unmountComponent(vnode.component!, parentSuspense, doRemove)
     } else {
+      // 不是组件
       if (__FEATURE_SUSPENSE__ && shapeFlag & ShapeFlags.SUSPENSE) {
         vnode.suspense!.unmount(parentSuspense, doRemove)
         return
@@ -2117,6 +2138,7 @@ function baseCreateRenderer(
     hostRemove(end)
   }
 
+  // 从父组件中，解绑子组件
   const unmountComponent = (
     instance: ComponentInternalInstance,
     parentSuspense: SuspenseBoundary | null,
@@ -2196,13 +2218,15 @@ function baseCreateRenderer(
     return hostNextSibling((vnode.anchor || vnode.el)!)
   }
 
-  // 渲染,虚拟dom => dom的方法
+  // 虚拟dom => 真实dom 的方法 render
   const render: RootRenderFunction = (vnode, container) => {
     if (vnode == null) {
       if (container._vnode) {
+        // 没有新的虚拟dom，直接卸载旧节点即可
         unmount(container._vnode, null, null, true)
       }
     } else {
+      // 对比并更新
       patch(container._vnode || null, vnode, container)
     }
     flushPostFlushCbs()
@@ -2235,7 +2259,7 @@ function baseCreateRenderer(
   return {
     render,
     hydrate,
-    createApp: createAppAPI(render, hydrate) // 应用程序的创建工场
+    createApp: createAppAPI(render, hydrate) // 应用程序的创建工厂
   }
 }
 

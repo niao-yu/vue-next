@@ -227,6 +227,7 @@ export function createAppAPI<HostElement>(
 
       mount(rootContainer: HostElement, isHydrate?: boolean): any {
         if (!isMounted) {
+          // 去生成虚拟dom
           const vnode = createVNode(
             rootComponent as ConcreteComponent,
             rootProps

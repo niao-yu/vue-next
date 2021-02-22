@@ -402,6 +402,7 @@ const emptyAppContext = createAppContext()
 
 let uid = 0
 
+// 创建一个组件实例
 export function createComponentInstance(
   vnode: VNode,
   parent: ComponentInternalInstance | null,
@@ -517,7 +518,7 @@ export function validateComponentName(name: string, config: AppConfig) {
 
 export let isInSSRComponentSetup = false
 
-// 初始化一个组件
+// 给组件实例添加功能
 export function setupComponent(
   instance: ComponentInternalInstance,
   isSSR = false
@@ -526,8 +527,8 @@ export function setupComponent(
 
   const { props, children, shapeFlag } = instance.vnode
   const isStateful = shapeFlag & ShapeFlags.STATEFUL_COMPONENT
-  initProps(instance, props, isStateful, isSSR)
-  initSlots(instance, children)
+  initProps(instance, props, isStateful, isSSR) // 初始化 props
+  initSlots(instance, children) // 初始化 slot
 
   const setupResult = isStateful
     ? setupStatefulComponent(instance, isSSR)

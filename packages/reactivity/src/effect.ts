@@ -52,6 +52,7 @@ export function isEffect(fn: any): fn is ReactiveEffect {
   return fn && fn._isEffect === true
 }
 
+// 生成一个依赖监听对象 - 发布者
 export function effect<T = any>(
   fn: () => T,
   options: ReactiveEffectOptions = EMPTY_OBJ
@@ -78,6 +79,7 @@ export function stop(effect: ReactiveEffect) {
 
 let uid = 0
 
+// 创建一个依赖监听对象 - 发布者
 function createReactiveEffect<T = any>(
   fn: () => T,
   options: ReactiveEffectOptions
@@ -86,6 +88,7 @@ function createReactiveEffect<T = any>(
     if (!effect.active) {
       return options.scheduler ? undefined : fn()
     }
+    // 如果 effectStack 中没有这个发布者
     if (!effectStack.includes(effect)) {
       cleanup(effect)
       try {
